@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package omnisphere.events;
+
+option go_package = "github.com/omnisphere/shared/schemas";
+
+// Événements panier
+message CartEvent {
+  string event_id = 1;
+  string cart_id = 2;
+  string user_id = 3;
+  string merchant_id = 4;
+  string event_type = 5; // created, updated, abandoned, completed
+  int64 timestamp = 6;
+  map<string, string> metadata = 7;
+}
+
+message CartAbandoned {
+  string cart_id = 1;
+  string user_id = 2;
+  string merchant_id = 3;
+  double total_amount = 4;
+  int32 item_count = 5;
+  int64 timestamp = 6;
+}
+
+message CartCompleted {
+  string cart_id = 1;
+  string order_id = 2;
+  string user_id = 3;
+  string merchant_id = 4;
+  double total_amount = 5;
+  int64 timestamp = 6;
+}
+

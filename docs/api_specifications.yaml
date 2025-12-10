@@ -1,0 +1,280 @@
+openapi: 3.0.0
+info:
+  title: OmniSphere API
+  version: 1.0.0
+  description: Spécifications API pour la plateforme OmniSphere
+
+servers:
+  - url: http://localhost:8080
+    description: Développement local
+  - url: https://api.omnisphere.com
+    description: Production
+
+paths:
+  /api/v1/auth/login:
+    post:
+      summary: Connexion utilisateur
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Connexion réussie
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                  refresh_token:
+                    type: string
+        '401':
+          description: Identifiants invalides
+
+  /api/v1/auth/register:
+    post:
+      summary: Inscription utilisateur
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                merchant_id:
+                  type: string
+      responses:
+        '201':
+          description: Utilisateur créé
+        '400':
+          description: Données invalides
+
+  /api/v1/products:
+    get:
+      summary: Liste des produits
+      tags:
+        - Products
+      parameters:
+        - name: merchant_id
+          in: query
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+        - name: offset
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Liste des produits
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  products:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Product'
+                  total:
+                    type: integer
+
+  /api/v1/products/{id}:
+    get:
+      summary: Détails d'un produit
+      tags:
+        - Products
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Détails du produit
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+
+  /api/v1/cart:
+    get:
+      summary: Récupérer le panier
+      tags:
+        - Cart
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Panier de l'utilisateur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+
+  /api/v1/cart/items:
+    post:
+      summary: Ajouter au panier
+      tags:
+        - Cart
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                product_id:
+                  type: string
+                variant_id:
+                  type: string
+                quantity:
+                  type: integer
+      responses:
+        '200':
+          description: Article ajouté au panier
+
+  /api/v1/checkout:
+    post:
+      summary: Processus de checkout
+      tags:
+        - Checkout
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                cart_id:
+                  type: string
+                payment_method:
+                  type: string
+                shipping_address:
+                  $ref: '#/components/schemas/Address'
+                billing_address:
+                  $ref: '#/components/schemas/Address'
+      responses:
+        '200':
+          description: Checkout initié
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  order_id:
+                    type: string
+                  payment_intent_id:
+                    type: string
+                  client_secret:
+                    type: string
+
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        id:
+          type: string
+        merchant_id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        sku:
+          type: string
+        price:
+          type: number
+        currency:
+          type: string
+        category_id:
+          type: string
+        images:
+          type: array
+          items:
+            type: string
+        tags:
+          type: array
+          items:
+            type: string
+        status:
+          type: string
+
+    Cart:
+      type: object
+      properties:
+        id:
+          type: string
+        user_id:
+          type: string
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CartItem'
+        total:
+          type: number
+        currency:
+          type: string
+
+    CartItem:
+      type: object
+      properties:
+        product_id:
+          type: string
+        variant_id:
+          type: string
+        quantity:
+          type: integer
+        price:
+          type: number
+        subtotal:
+          type: number
+
+    Address:
+      type: object
+      properties:
+        street:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        zip_code:
+          type: string
+        country:
+          type: string
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+

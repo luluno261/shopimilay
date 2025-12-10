@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package omnisphere.events;
+
+option go_package = "github.com/omnisphere/shared/schemas";
+
+// Événements de commande
+message OrderEvent {
+  string event_id = 1;
+  string order_id = 2;
+  string user_id = 3;
+  string merchant_id = 4;
+  string event_type = 5; // created, paid, shipped, delivered, cancelled
+  int64 timestamp = 6;
+  map<string, string> metadata = 7;
+}
+
+message OrderCreated {
+  string order_id = 1;
+  string user_id = 2;
+  string merchant_id = 3;
+  double total_amount = 4;
+  string currency = 5;
+  repeated OrderItem items = 6;
+  int64 timestamp = 7;
+}
+
+message OrderItem {
+  string product_id = 1;
+  string variant_id = 2;
+  int32 quantity = 3;
+  double price = 4;
+}
+
+message OrderPaid {
+  string order_id = 1;
+  string payment_intent_id = 2;
+  double amount = 3;
+  string currency = 4;
+  int64 timestamp = 5;
+}
+

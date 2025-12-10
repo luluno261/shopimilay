@@ -1,0 +1,21 @@
+server:
+  port: 8080
+  host: "0.0.0.0"
+
+database:
+  host: "localhost"
+  port: 5432
+  user: "omnisphere"
+  password: "omnisphere_dev"
+  dbname: "omnisphere"
+  sslmode: "disable"
+
+jwt:
+  secret: "your-secret-key-change-in-production"
+  expiration: 3600 # secondes
+  refresh_expiration: 604800 # 7 jours
+
+log:
+  level: "info"
+  format: "json"
+

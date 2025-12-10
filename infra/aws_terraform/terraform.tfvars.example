@@ -1,0 +1,26 @@
+# Exemple de fichier de variables Terraform
+# Copier ce fichier vers terraform.tfvars et remplir les valeurs
+
+aws_region = "us-east-1"
+environment = "dev"
+project_name = "omnisphere"
+
+vpc_cidr = "10.0.0.0/16"
+availability_zones = ["us-east-1a", "us-east-1b"]
+
+# RDS
+db_instance_class = "db.t3.medium"
+db_allocated_storage = 100
+db_name = "omnisphere"
+db_username = "omnisphere"
+db_password = "CHANGEZ_MOI_EN_PRODUCTION"
+
+# MSK
+kafka_version = "3.5.1"
+msk_instance_type = "kafka.m5.large"
+msk_broker_count = 3
+
+# Elasticsearch
+elasticsearch_instance_type = "t3.small.elasticsearch"
+elasticsearch_instance_count = 2
+

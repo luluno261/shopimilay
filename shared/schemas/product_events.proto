@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package omnisphere.events;
+
+option go_package = "github.com/omnisphere/shared/schemas";
+
+// Événements produit
+message ProductEvent {
+  string event_id = 1;
+  string product_id = 2;
+  string user_id = 3;
+  string merchant_id = 4;
+  string event_type = 5; // viewed, added_to_cart, purchased
+  int64 timestamp = 6;
+  map<string, string> metadata = 7;
+}
+
+message ProductViewed {
+  string product_id = 1;
+  string user_id = 2;
+  string merchant_id = 3;
+  int64 timestamp = 4;
+}
+
+message ProductAddedToCart {
+  string product_id = 1;
+  string user_id = 2;
+  string merchant_id = 3;
+  int32 quantity = 4;
+  int64 timestamp = 5;
+}
+
