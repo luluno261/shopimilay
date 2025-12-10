@@ -40,10 +40,10 @@ export default function CustomerDetail({ customer, onClose }: CustomerDetailProp
     }
   }
 
-  const formatCurrency = (value: number) => {
+  const formatCurrency = (value: number, currency: string = 'USD') => {
     return new Intl.NumberFormat('fr-FR', {
       style: 'currency',
-      currency: 'EUR',
+      currency: currency,
     }).format(value)
   }
 
